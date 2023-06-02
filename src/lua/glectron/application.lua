@@ -11,6 +11,10 @@ function Application:Create()
     app.m_DHTML:ParentToHUD()
     function app.m_DHTML:OnDocumentReady()
         app.m_InteropLayer:Setup()
+        if type(app.Setup) == "function" then
+            app:Setup()
+        end
+        self:RunJavascript("_G_OnAppSetup()")
     end
 
     return app
@@ -19,6 +23,11 @@ end
 function Application:SetURL(url)
     self.m_AppURL = url
     self.m_DHTML:OpenURL(url)
+end
+
+function Application:SetHTML(html)
+    self.m_AppURL = nil
+    self.m_DHTML:SetHTML(html)
 end
 
 function Application:Reload()

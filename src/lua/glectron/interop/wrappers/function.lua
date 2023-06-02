@@ -1,46 +1,33 @@
 local WRAPPER = {}
 
-function WRAPPER:Transform(value, iLayer)
-    if type(value) == "function" then
-        -- Lua to JavaScript
-        local jsSource = iLayer.m_Wrappers[value]
-        if jsSource then
-            -- This is a JavaScript function wrapper
-            local obj = {
-                ["_GTRON_WRAPPER_TYPE"] = "function",
-                ["data"] = {
-                    ["name"] = jsSource
-                }
-            }
-            return util.TableToJSON(obj) -- Returns string
-        else
-            -- This is a Lua function
-            local name = "FUNC_" .. util.Base64Encode(tostring(value))
-            iLayer.m_Objects[name] = value
-            local obj = {
-                ["_GTRON_WRAPPER_TYPE"] = "luafunction",
-                ["data"] = {
-                    ["name"] = name
-                }
-            }
-            return util.TableToJSON(obj) -- Returns string
+function WRAPPER:From(layer, obj)
+    if type(obj) == "table" then
+        local t = Glectron.Interop:InteropObjectType(obj)
+        if t == "luafunction" then
+            return layer.m_Objects[obj.ID]
+        elseif t == "jsfunction" then
+            local func = function(...)
+                layer:__call_js(obj.ID, ...)
+            end
+            layer.m_Wrappers[func] = obj.ID
+            return func
         end
     end
-    if type(value) == "table" then
-        -- JavaScript to Lua
-        if value._GTRON_WRAPPER_TYPE == "function" then
-            -- This is a Lua function passed to JavaScript
-            local name = value.data.name
-            return iLayer.m_Objects[name] -- Returns function
-        elseif value._GTRON_WRAPPER_TYPE == "jsfunction" then
-            -- This is a JavaScript function
-            local name = value.data.name
-            table.insert(iLayer.m_WrapperNames, name)
-            local function wrapper(...)
-                -- TODO: Call JS function with parameter and return the value
-            end
-            iLayer.m_Wrappers[wrapper] = name
-            return wrapper -- Returns function
+end
+
+function WRAPPER:To(layer, obj)
+    if type(obj) == "function" then
+        if layer.m_Wrappers[obj] then
+            -- This is a wrapper to JavaScript function
+            local io = Glectron.Interop:CreateInteropObject("jsfunction")
+            io.ID = layer.m_Wrappers[obj]
+            return util.TableToJSON(io)
+        else
+            local strid = util.Base64Encode(tostring(obj), true)
+            layer.m_Objects[strid] = obj
+            local io = Glectron.Interop:CreateInteropObject("luafunction")
+            io.ID = strid
+            return util.TableToJSON(io)
         end
     end
 end

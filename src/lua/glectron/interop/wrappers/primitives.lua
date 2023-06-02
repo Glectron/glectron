@@ -1,15 +1,24 @@
 local WRAPPER = {}
 
-function WRAPPER:Transform(value)
-    local t = type(value)
+WRAPPER.Priority = -10
+
+function WRAPPER:From(_, obj)
+    local t = type(obj)
     if
         t == "number" or
-        t == "boolean"
+        t == "boolean" or
+        t == "string"
     then
-        return value
+        return obj
     end
+end
+
+function WRAPPER:To(_, obj)
+    local t = type(obj)
     if t == "string" then
-        return "\"" .. value:JavascriptSafe() .. "\""
+        return "\"" .. obj:JavascriptSafe() .. "\""
+    elseif t == "number" or t == "bool" then
+        return tostring(obj)
     end
 end
 

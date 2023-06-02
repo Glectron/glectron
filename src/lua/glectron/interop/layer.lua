@@ -1,8 +1,6 @@
 local InteropLayer = {}
 InteropLayer.__index = InteropLayer
 
-AccessorFunc(InteropLayer, "m_AllowGlobalCall", "AllowGlobalCall", FORCE_BOOL)
-
 function InteropLayer:Create(app)
     local layer = {}
     setmetatable(layer, InteropLayer)
@@ -21,29 +19,29 @@ end
 
 function InteropLayer:Setup()
     local dhtml = self.m_App.m_DHTML
-    dhtml:AddFunction("_GTRON", "Call", function(methodName, parameters)
-    
-    end)
-    dhtml:AddFunction("_GTRON", "CallGlobal", function(methodName, parameters)
-        if not self.m_AllowGlobalCall then
-            
+
+    -- TODO: Inject Glectron JS library
+
+    dhtml:AddFunction("__glectron", "call", function(id, ...)
+        local func = self.m_Objects[id]
+        if not func then
+            error("invalid func id")
         end
+        local parameters = {...}
+        local p = {}
+        for _,v in ipairs(parameters) do
+            table.insert(p, Glectron.Interop:FromInteropObject(self, v))
+        end
+        func(unpack(p))
     end)
-    dhtml:AddFunction("_GTRON", "RemoveReference", function(objectName)
-        
-    end)
 end
 
-function InteropLayer:DoTransform(value)
-
+function InteropLayer:AddFunction(path, func)
+    self.m_App.m_DHTML:RunJavascript("_G_Register(\"" .. path:JavascriptSafe() .. "\"," .. Glectron.Interop:ToInteropObject(self, func) .. ")")
 end
 
-function InteropLayer:CallJavaScriptFunction()
-
-end
-
-function InteropLayer:AddFunction(path, callback)
-
+function InteropLayer:__call_js(func, ...)
+    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_G_Call", func, ...))
 end
 
 

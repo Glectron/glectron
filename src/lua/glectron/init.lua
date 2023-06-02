@@ -9,3 +9,5 @@ setmetatable(Glectron, meta)
 
 include("interop/init.lua")
 include("application.lua")
+
+hook.Run("GlectronLoaded")
