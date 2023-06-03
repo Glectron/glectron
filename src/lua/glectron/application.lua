@@ -7,15 +7,15 @@ function Application:Create()
     
     app.m_InteropLayer = Glectron.InteropLayer:Create(app)
 
-    app.m_DHTML = vgui.Create("DHTML")
+    app.m_DHTML = vgui.Create("DHTML", vgui.GetWorldPanel())
     app.m_DHTML:SetAllowLua(false)
-    app.m_DHTML:ParentToHUD()
+    app.m_DHTML:Dock(FILL)
     function app.m_DHTML:OnDocumentReady()
         app.m_InteropLayer:Setup()
         if type(app.Setup) == "function" then
             app:Setup()
         end
-        self:RunJavascript("_G_OnAppSetup()")
+        self:RunJavascript("_glectron_js_.setup()")
     end
 
     return app

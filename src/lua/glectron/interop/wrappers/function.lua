@@ -7,7 +7,7 @@ function WRAPPER:From(layer, obj)
             return layer.m_Objects[obj.ID]
         elseif t == "jsfunction" then
             local func = function(...)
-                layer:__call_js(obj.ID, ...)
+                layer:CallJS(obj.ID, ...)
             end
             layer.m_Wrappers[func] = obj.ID
             return func

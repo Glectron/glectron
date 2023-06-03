@@ -1,4 +1,4 @@
-local __glectron_js_library__ = [[%GLECTRON_JS_LIBRARY%]]
+local __glectron_js_library__ = [==[%GLECTRON_JS_LIBRARY%]==]
 
 local InteropLayer = {}
 InteropLayer.__index = InteropLayer
@@ -24,7 +24,7 @@ function InteropLayer:Setup()
 
     dhtml:RunJavascript(__glectron_js_library__)
 
-    dhtml:AddFunction("__glectron", "call", function(id, ...)
+    dhtml:AddFunction("_glectron_lua_", "call", function(id, ...)
         local func = self.m_Objects[id]
         if not func then
             error("invalid func id")
@@ -39,11 +39,11 @@ function InteropLayer:Setup()
 end
 
 function InteropLayer:AddFunction(path, func)
-    self.m_App.m_DHTML:RunJavascript("_G_Register(\"" .. path:JavascriptSafe() .. "\"," .. Glectron.Interop:ToInteropObject(self, func) .. ")")
+    self.m_App.m_DHTML:RunJavascript("_glectron_js_.registerLuaFunction(\"" .. path:JavascriptSafe() .. "\"," .. Glectron.Interop:ToInteropObject(self, func) .. ")")
 end
 
-function InteropLayer:__call_js(func, ...)
-    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_G_Call", func, ...))
+function InteropLayer:CallJS(func, ...)
+    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_glectron_js_.call", func, ...))
 end
 
 
