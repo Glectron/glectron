@@ -8,6 +8,7 @@ function Application:Create()
     app.m_InteropLayer = Glectron.InteropLayer:Create(app)
 
     app.m_DHTML = vgui.Create("DHTML")
+    app.m_DHTML:SetAllowLua(false)
     app.m_DHTML:ParentToHUD()
     function app.m_DHTML:OnDocumentReady()
         app.m_InteropLayer:Setup()
