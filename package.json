@@ -14,16 +14,19 @@
     "watch:dev": "gulp watch"
   },
   "browserslist": [
-    "chrome 18"
+    "Chrome 18"
   ],
   "devDependencies": {
     "@babel/core": "^7.22.1",
     "@babel/preset-env": "^7.22.4",
     "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.1",
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
+    "core-js": "^3.30.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.42.0",
     "gulp": "^4.0.2",

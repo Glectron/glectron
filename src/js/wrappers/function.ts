@@ -1,8 +1,9 @@
-import { Wrapper, addWrapper, createInteropObject, interopObjectType, objectObjs, toInteropObject, wrapperObjs } from "../interop";
+import { registerInteropObjectGC } from "../gc";
+import { InteropObject, Wrapper, addWrapper, createInteropObject, interopObjectType, objectObjs, toInteropObject, wrapperObjs } from "../interop";
 import { random_string } from "../util";
 
 class FunctionWrapper implements Wrapper {
-    from(obj: unknown): unknown {
+    from(obj: unknown): InteropObject {
         if (typeof obj == "object") {
             const t = interopObjectType(obj);
             if (t == "luafunction") {
@@ -14,6 +15,8 @@ class FunctionWrapper implements Wrapper {
                     }
                     window._glectron_lua_.call(id, ...parameters);
                 };
+                wrapperObjs.set(func, id);
+                registerInteropObjectGC(func, id);
                 return func;
             } else if (t == "jsfunction") {
                 return objectObjs.get((obj as {ID: string}).ID);
@@ -23,8 +26,8 @@ class FunctionWrapper implements Wrapper {
     to(obj: unknown): unknown {
         if (typeof obj == "function") {
             const func = obj as (...args: unknown[]) => void;
-            if (wrapperObjs.has(func as unknown)) {
-                const id = wrapperObjs.get(func as unknown);
+            if (wrapperObjs.has(func)) {
+                const id = wrapperObjs.get(func);
                 return createInteropObject("luafunction", {
                     ID: id
                 });

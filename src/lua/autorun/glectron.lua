@@ -77,5 +77,4 @@ if CLIENT and file.Exists(GTRON_PATH .. "/init.lua", "LUA") then
     GLECTRON_PATH = GTRON_PATH
     print(string.format("Initializing Glectron v%d.%d.%d (%s Version)", ver.MAJOR, ver.MINOR, ver.PATCH, GTRON_ATTRIBUTES.EMBED and "Embeded" or "Standalone"))
     include(GTRON_PATH .. "/init.lua")
-    print("Glectron is loaded.")
 end

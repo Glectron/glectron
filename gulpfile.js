@@ -5,6 +5,8 @@ const rename = require("gulp-rename");
 const babel = require("@rollup/plugin-babel");
 const typescript = require("@rollup/plugin-typescript");
 const terser = require("@rollup/plugin-terser");
+const commonjs = require("@rollup/plugin-commonjs");
+const nodeResolve = require("@rollup/plugin-node-resolve");
 
 const fs = require("fs");
 
@@ -13,7 +15,11 @@ const production = process.env.NODE_ENV?.trim() == "production";
 async function javascript() {
     const plugins = [
         typescript(),
-        babel({ babelHelpers: "bundled" })
+        commonjs({
+            sourceMap: false
+        }),
+        nodeResolve(),
+        babel({ babelHelpers: "bundled", extensions: [".js", ".ts"] })
     ];
 
     if (production) plugins.push(terser());

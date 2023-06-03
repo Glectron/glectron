@@ -1,3 +1,4 @@
+import "./polyfill";
 import { fireEvent } from "./events";
 import { luaBridge, lib } from "./library";
 

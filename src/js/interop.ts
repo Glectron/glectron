@@ -1,14 +1,16 @@
 const wrappers: [Wrapper, number][] = [];
 
-export const wrapperObjs: Map<unknown, string> = new Map();
-export const objectObjs: Map<string, unknown> = new Map();
+export const wrapperObjs: Map<object, string> | WeakMap<object, string> = "WeakMap" in window ? new WeakMap() : new Map();
+export const objectObjs: Map<string, InteropObject> = new Map();
+
+export type InteropObject = object | string | number | boolean;
 
 export interface Wrapper {
-    from(obj: unknown): unknown | undefined;
+    from(obj: unknown): InteropObject | undefined;
     to(obj: unknown): unknown | undefined;
 }
 
-export function fromInteropObject(obj: unknown): unknown {
+export function fromInteropObject(obj: unknown): InteropObject {
     for (const wrapper of wrappers) {
         const ret = wrapper[0].from(obj);
         if (ret !== undefined) {
@@ -22,7 +24,7 @@ export function toInteropObject(obj: unknown): unknown {
     for (const wrapper of wrappers) {
         const ret = wrapper[0].to(obj);
         if (ret !== undefined) {
-            return ret;
+            return (window as {_GLECTRON_CHROMIUM_?: boolean})._GLECTRON_CHROMIUM_ === true ? ret : (typeof ret == "object" ? "!GOBJ!" + JSON.stringify(ret) : ret);
         }
     }
     return null;
@@ -31,7 +33,7 @@ export function toInteropObject(obj: unknown): unknown {
 export function interopObjectType(obj: unknown): string | null {
     if (typeof obj == "object") {
         const o = obj as { _G_InteropObj?: boolean, _G_InteropType?: string };
-        if (o._G_InteropObj) {
+        if (o && o._G_InteropObj) {
             return o._G_InteropType as string;
         }
     }
@@ -69,6 +71,10 @@ export function call(id: string, ...args: unknown[]) {
 
     const func = objectObjs.get(id) as (...args: unknown[]) => void;
     func(...parameters);
+}
+
+export function collect(id: string) {
+    objectObjs.delete(id);
 }
 
 function sortWrappers() {

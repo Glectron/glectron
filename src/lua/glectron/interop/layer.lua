@@ -8,7 +8,6 @@ function InteropLayer:Create(app)
     setmetatable(layer, InteropLayer)
 
     layer.m_App = app
-    layer.m_WrapperNames = {}
     layer.m_Wrappers = {}
     layer.m_Objects = {}
 
@@ -22,6 +21,9 @@ end
 function InteropLayer:Setup()
     local dhtml = self.m_App.m_DHTML
 
+    if Glectron:IsChromium() then
+        dhtml:RunJavascript("window._GLECTRON_CHROMIUM_=true")
+    end
     dhtml:RunJavascript(__glectron_js_library__)
 
     dhtml:AddFunction("_glectron_lua_", "call", function(id, ...)
@@ -36,10 +38,18 @@ function InteropLayer:Setup()
         end
         func(unpack(p))
     end)
+    dhtml:AddFunction("_glectron_lua_", "collect", function(id)
+        self.m_Objects[id] = nil
+        collectgarbage()
+    end)
 end
 
 function InteropLayer:AddFunction(path, func)
-    self.m_App.m_DHTML:RunJavascript("_glectron_js_.registerLuaFunction(\"" .. path:JavascriptSafe() .. "\"," .. Glectron.Interop:ToInteropObject(self, func) .. ")")
+    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_glectron_js_.registerLuaFunction", path, func))
+end
+
+function InteropLayer:Collect(id)
+    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_glectron_js_.collect", id))
 end
 
 function InteropLayer:CallJS(func, ...)

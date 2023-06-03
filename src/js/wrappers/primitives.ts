@@ -1,7 +1,7 @@
-import { Wrapper, addWrapper } from "../interop";
+import { InteropObject, Wrapper, addWrapper } from "../interop";
 
 class PrimitiveWrapper implements Wrapper {
-    from(obj: unknown): unknown {
+    from(obj: unknown): InteropObject {
         if (typeof obj == "string" || typeof obj == "number" || typeof obj == "boolean") {
             return obj;
         }

@@ -17,7 +17,7 @@ function WRAPPER:To(_, obj)
     local t = type(obj)
     if t == "string" then
         return "\"" .. obj:JavascriptSafe() .. "\""
-    elseif t == "number" or t == "bool" then
+    elseif t == "number" or t == "boolean" then
         return tostring(obj)
     end
 end
