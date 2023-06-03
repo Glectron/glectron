@@ -1,4 +1,5 @@
-// temporary libray
+// TODO: Migrate into current JavaScript library framework
+// temporary library
 !function() {
     const js_func = {};
     const lua_func = {};

@@ -1,9 +1,9 @@
-local GTRON_PATH = "glectron" -- TODO: For Glectron Node Tools
+local GTRON_PATH = "%GLECTRON_PATH%"
 local GTRON_ATTRIBUTES = { -- DO NOT MODIFY
     VERSION = {
         MAJOR = 0,
         MINOR = 0,
-        PATCH = 1
+        PATCH = 1 -- TODO: Set using package.json version automatically
     },
     EMBED = false,
     PATH = GTRON_PATH

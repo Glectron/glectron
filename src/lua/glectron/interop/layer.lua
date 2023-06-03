@@ -1,3 +1,5 @@
+local __glectron_js_library__ = [[%GLECTRON_JS_LIBRARY%]]
+
 local InteropLayer = {}
 InteropLayer.__index = InteropLayer
 
@@ -20,7 +22,7 @@ end
 function InteropLayer:Setup()
     local dhtml = self.m_App.m_DHTML
 
-    -- TODO: Inject Glectron JS library
+    dhtml:RunJavascript(__glectron_js_library__)
 
     dhtml:AddFunction("__glectron", "call", function(id, ...)
         local func = self.m_Objects[id]
