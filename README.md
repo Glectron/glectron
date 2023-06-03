@@ -4,6 +4,8 @@
 # Work In Progress
 The project is still in Early State of development. You can check out all technical concepts in [Discussions](https://github.com/Glectron/glectron/discussions).
 
+It's _not recommended_ to use this framework now. All APIs are **not stable**, which means they are subject to be changed anytime.
+
 # Project Structure
 <pre>
 ├── assets <i>(Project assets)</i>
