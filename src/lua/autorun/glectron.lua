@@ -1,9 +1,9 @@
 local GTRON_PATH = "%GLECTRON_PATH%"
 local GTRON_ATTRIBUTES = { -- DO NOT MODIFY
     VERSION = {
-        MAJOR = 0,
-        MINOR = 0,
-        PATCH = 1 -- TODO: Set using package.json version automatically
+        MAJOR = "%GLECTRON_VER_MAJOR%",
+        MINOR = "%GLECTRON_VER_MINOR%",
+        PATCH = "%GLECTRON_VER_PATCH%"
     },
     EMBED = false,
     PATH = GTRON_PATH

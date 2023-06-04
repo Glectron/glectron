@@ -11,6 +11,22 @@ const nodeResolve = require("@rollup/plugin-node-resolve");
 const fs = require("fs");
 
 const production = process.env.NODE_ENV?.trim() == "production";
+const version = {
+    major: 0,
+    minor: 0,
+    patch: 1
+};
+
+try {
+    const pkg = JSON.parse(fs.readFileSync("package.json", {encoding: "utf-8"}));
+    const version = pkg.version;
+    const parts = version.split(".");
+    version.major = parseInt(parts[0]) || 0;
+    version.minor = parseInt(parts[1]) || 0;
+    version.patch = parseInt(parts[2]) || 1;
+} catch {
+    console.warn("Unable to read package version.");
+}
 
 async function javascript() {
     const plugins = [
@@ -42,6 +58,9 @@ function lua() {
     return gulp.src("src/lua/**/*.lua", {base: "src/"})
         .pipe(replace("%GLECTRON_JS_LIBRARY%", library))
         .pipe(replace("%GLECTRON_PATH%", process.env.GLECTRON_PATH?.trim() || "glectron"))
+        .pipe(replace("\"%GLECTRON_VER_MAJOR%\"", version.major))
+        .pipe(replace("\"%GLECTRON_VER_MINOR%\"", version.minor))
+        .pipe(replace("\"%GLECTRON_VER_PATCH%\"", version.patch))
         .pipe(rename(function(path) {
             if (process.env.GLECTRON_ID) {
                 if (path.dirname == "lua\\autorun" && path.basename == "glectron") {
