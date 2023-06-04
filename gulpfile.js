@@ -2,6 +2,7 @@ const rollup = require("rollup");
 const gulp = require("gulp");
 const replace = require("gulp-replace");
 const rename = require("gulp-rename");
+const inject = require("@rollup/plugin-inject");
 const babel = require("@rollup/plugin-babel");
 const typescript = require("@rollup/plugin-typescript");
 const terser = require("@rollup/plugin-terser");
@@ -9,6 +10,7 @@ const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve");
 
 const fs = require("fs");
+const path = require("path");
 
 const production = process.env.NODE_ENV?.trim() == "production";
 const version = {
@@ -38,7 +40,12 @@ async function javascript() {
         babel({ babelHelpers: "bundled", extensions: [".js", ".ts"] })
     ];
 
-    if (production) plugins.push(terser());
+    if (production)
+        plugins.push(terser());
+    else
+        plugins.unshift(inject({
+            "glectron.debug": path.resolve("src/js/debug.ts")
+        }));
 
     const bundle = await rollup.rollup({
         input: "src/js/index.ts",

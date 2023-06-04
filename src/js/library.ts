@@ -24,5 +24,6 @@ export const luaBridge = {
 export const lib = {
     get isChromium() {
         return (window as {_GLECTRON_CHROMIUM_?: boolean})._GLECTRON_CHROMIUM_ === true;
-    }
+    },
+    debug: undefined
 };
