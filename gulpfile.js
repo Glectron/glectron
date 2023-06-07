@@ -55,7 +55,7 @@ async function javascript() {
         file: "build/js/library.js",
         format: "iife",
         name: "library",
-        sourcemap: !production
+        sourcemap: production ? false : "inline"
     });
 }
 
