@@ -3,7 +3,9 @@ Glectron = {}
 local p = newproxy(true)
 local pmeta = getmetatable(p)
 function pmeta:__gc()
-    -- TODO: Shutdown all loaded Glectron apps
+    for _,v in pairs(Glectron.Applications or {}) do
+        v:_Shutdown() -- Do force shutdown
+    end
 end
 local meta = {
     gc = p
@@ -15,7 +17,10 @@ function Glectron:IsChromium()
 end
 
 local function initialize()
+    Glectron.Applications = {}
+
     include(GLECTRON_PATH .. "/interop/init.lua")
+    include(GLECTRON_PATH .. "/input.lua")
     include(GLECTRON_PATH .. "/application.lua")
     
     print("Glectron is loaded.")

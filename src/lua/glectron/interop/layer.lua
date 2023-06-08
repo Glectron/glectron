@@ -44,17 +44,24 @@ function InteropLayer:Setup()
     end)
 end
 
+function InteropLayer:RunJavascriptFunction(func, ...)
+    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, func, ...))
+end
+
 function InteropLayer:AddFunction(path, func)
-    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_glectron_js_.registerLuaFunction", path, func))
+    self:RunJavascriptFunction("_glectron_js_.registerLuaFunction", path, func)
 end
 
 function InteropLayer:Collect(id)
-    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_glectron_js_.collect", id))
+    self:RunJavascriptFunction("_glectron_js_.collect", id)
 end
 
 function InteropLayer:CallJS(func, ...)
-    self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, "_glectron_js_.call", func, ...))
+    self:RunJavascriptFunction("_glectron_js_.call", func, ...)
 end
 
+function InteropLayer:FireEvent(event, data)
+    self:RunJavascriptFunction("_glectron_js_.fireEvent", event, data)
+end
 
 Glectron.InteropLayer = InteropLayer

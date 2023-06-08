@@ -3,6 +3,7 @@ local WRAPPER = {}
 WRAPPER.Priority = -10
 
 function WRAPPER:From(_, obj)
+    if obj == nil then return nil end
     local t = type(obj)
     if
         t == "number" or
@@ -14,6 +15,7 @@ function WRAPPER:From(_, obj)
 end
 
 function WRAPPER:To(_, obj)
+    if obj == nil then return "null" end
     local t = type(obj)
     if t == "string" then
         return "\"" .. obj:JavascriptSafe() .. "\""

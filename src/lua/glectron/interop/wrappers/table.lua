@@ -10,7 +10,7 @@ end
 
 function WRAPPER:To(_, obj)
     if type(obj) == "table" then
-        return util.TableToJSON(obj)
+        return util.TableToJSON(obj) -- TODO: Deep transform
     end
 end
 
