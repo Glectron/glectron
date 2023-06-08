@@ -89,9 +89,9 @@ function Application:MakePopup(supressEvent)
     local enabled = self.m_DHTML:IsMouseInputEnabled()
     self.m_DummyVGUIPanel:MakePopup()
     self.m_DHTML:MakePopup()
-    self.m_DHTML:SetMouseInputEnabled(enabled)
     self:SetMouseInputEnabled(true)
     if not supressEvent then
+        self.m_DHTML:SetMouseInputEnabled(enabled)
         self.m_InteropLayer:FireEvent("popup")
     end
 end
