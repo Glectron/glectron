@@ -44,6 +44,17 @@ function InteropLayer:Setup()
     end)
 end
 
+function InteropLayer:Reset()
+    self.m_Wrappers = {}
+    self.m_Objects = {}
+
+    local weak = {}
+    weak.__mode = "k"
+    setmetatable(self.m_Wrappers, weak)
+
+    collectgarbage()
+end
+
 function InteropLayer:RunJavascriptFunction(func, ...)
     self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, func, ...))
 end

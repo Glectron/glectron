@@ -15,6 +15,11 @@ function Application:Create()
     app.m_DHTML:SetAllowLua(false)
     app.m_DHTML:SetFocusTopLevel(true)
     app.m_DHTML:Dock(FILL)
+
+    function app.m_DHTML:OnBeginLoadingDocument()
+        app.m_InteropLayer:Reset()
+    end
+
     function app.m_DHTML:OnDocumentReady()
         app.m_InteropLayer:Setup()
         self:AddFunction("_glectron_lua_", "shutdown", function()
