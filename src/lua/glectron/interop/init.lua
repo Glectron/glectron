@@ -11,6 +11,7 @@ function Glectron.Interop:CreateInteropObject(type)
 end
 
 function Glectron.Interop:InteropObjectType(obj)
+    if type(obj) ~= "table" then return nil end
     return obj._G_InteropType
 end
 

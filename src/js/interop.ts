@@ -30,6 +30,11 @@ export function toInteropObject(obj: unknown): unknown {
     return null;
 }
 
+export function isInteropObject(obj: unknown): boolean {
+    if (typeof obj !== "object") return false;
+    return (obj as { _G_InteropObj?: boolean })._G_InteropObj === true;
+}
+
 export function interopObjectType(obj: unknown): string | null {
     if (typeof obj == "object") {
         const o = obj as { _G_InteropObj?: boolean, _G_InteropType?: string };

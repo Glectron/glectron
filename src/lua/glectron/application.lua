@@ -44,8 +44,12 @@ function Application:Create()
         self:RunJavascript("_glectron_js_.setup()")
     end
 
-    app:MakePopup(true)
-    app:UnPopup(true)
+    app.m_DHTML:MakePopup()
+    app.m_DummyVGUIPanel:MakePopup()
+    app.m_DHTML:SetMouseInputEnabled(false)
+    app.m_DHTML:SetKeyBoardInputEnabled(false)
+    app.m_DummyVGUIPanel:SetMouseInputEnabled(false)
+    app.m_DummyVGUIPanel:SetKeyBoardInputEnabled(false)
 
     table.insert(Glectron.Applications, app)
 
@@ -85,23 +89,19 @@ function Application:SetKeyBoardInputEnabled(enabled)
     self.m_DummyVGUIPanel:SetKeyBoardInputEnabled(enabled)
 end
 
-function Application:MakePopup(supressEvent)
+function Application:MakePopup()
     local enabled = self.m_DHTML:IsMouseInputEnabled()
     self.m_DummyVGUIPanel:MakePopup()
     self.m_DHTML:MakePopup()
+    self.m_DHTML:SetMouseInputEnabled(enabled)
     self:SetMouseInputEnabled(true)
-    if not supressEvent then
-        self.m_DHTML:SetMouseInputEnabled(enabled)
-        self.m_InteropLayer:FireEvent("popup")
-    end
+    self.m_InteropLayer:FireEvent("popup")
 end
 
-function Application:UnPopup(supressEvent)
+function Application:UnPopup()
     self:SetMouseInputEnabled(false)
     self:SetKeyBoardInputEnabled(false)
-    if not supressEvent then
-        self.m_InteropLayer:FireEvent("unpopup")
-    end
+    self.m_InteropLayer:FireEvent("unpopup")
 end
 
 function Application:MouseMove(x, y)
