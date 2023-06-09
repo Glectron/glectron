@@ -1,7 +1,7 @@
 import * as events from "./events";
 import { registerLuaFunction, call, collect } from "./interop";
 import { beforeShutdown, onShutdown, setup, shutdown } from "./lifecycle";
-import { hitTest, onHitTest, setMouseInputEnabled, setKeyboardInputEnabled, makePopup, unPopup } from "./input";
+import { hitTest, onHitTest, setMouseInputEnabled, setKeyboardInputEnabled, makePopup, unPopup, globalMouseMove, mouseCapture } from "./input";
 
 declare global {
     interface Window {
@@ -14,7 +14,9 @@ declare global {
             mouseInput: (enabled: boolean) => void,
             keyboardInput: (enabled: boolean) => void,
             makePopup: () => void,
-            unPopup: () => void
+            unPopup: () => void,
+            globalMouseMove: (enabled: boolean) => void,
+            mouseCapture: (enabled: boolean) => void
         }
         glectron: typeof lib;
     }
@@ -41,5 +43,7 @@ export const lib = {
     setKeyboardInputEnabled,
     makePopup,
     unPopup,
+    globalMouseMove,
+    mouseCapture,
     debug: undefined
 };

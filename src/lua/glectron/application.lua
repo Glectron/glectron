@@ -37,11 +37,25 @@ function Application:Create()
         self:AddFunction("_glectron_lua_", "unPopup", function(enabled)
             app:UnPopup()
         end)
+        self:AddFunction("_glectron_lua_", "globalMouseMove", function(enabled)
+            app.m_GlobalMouseMove = enabled
+        end)
+        self:AddFunction("_glectron_lua_", "mouseCapture", function(enabled)
+            app:MouseCapture(enabled)
+        end)
         
         if type(app.Setup) == "function" then
             app:Setup()
         end
         self:RunJavascript("_glectron_js_.setup()")
+    end
+
+    function app.m_DummyVGUIPanel:OnMousePressed(keyCode)
+        app.m_InteropLayer:FireEvent("capturemousepress", { detail = keyCode })
+    end
+
+    function app.m_DummyVGUIPanel:OnMouseReleased(keyCode)
+        app.m_InteropLayer:FireEvent("capturemouserelease", { detail = keyCode })
     end
 
     app.m_DHTML:MakePopup()
@@ -104,9 +118,16 @@ function Application:UnPopup()
     self.m_InteropLayer:FireEvent("unpopup")
 end
 
+function Application:MouseCapture(enabled)
+    self.m_DummyVGUIPanel:MouseCapture(enabled)
+end
+
 function Application:MouseMove(x, y)
     if self.m_MouseInput then
         self.m_InteropLayer:RunJavascriptFunction("_glectron_js_.hitTest", ScrW(), ScrH(), x, y)
+    end
+    if self.m_GlobalMouseMove then
+        self.m_InteropLayer:FireEvent("globalmousemove", { detail = {x = x, y = y} })
     end
 end
 

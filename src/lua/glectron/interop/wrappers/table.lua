@@ -4,20 +4,17 @@ WRAPPER.Priority = 100
 
 local function toInteropObject(layer, val)
     local result = Glectron.Interop:ToInteropObject(layer, val)
-    if type(result) == "string" then
-        local tbl = util.JSONToTable(result)
-        if tbl then
-            if Glectron.Interop:InteropObjectType(tbl) then
-                return tbl
-            else
-                return result
-            end
-        else
-            return result
-        end
-    else
-        return result
-    end
+
+    local num = tonumber(result)
+    if num then return num end
+
+    if result == "true" then return true end
+    if result == "false" then return false end
+
+    local tbl = util.JSONToTable(result)
+    if tbl then return tbl end
+
+    return result
 end
 
 function WRAPPER:From(layer, obj)

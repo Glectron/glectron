@@ -32,3 +32,11 @@ export function makePopup() {
 export function unPopup() {
     window._glectron_lua_.unPopup();
 }
+
+export function globalMouseMove(enabled: boolean) {
+    window._glectron_lua_.globalMouseMove(enabled);
+}
+
+export function mouseCapture(enabled: boolean) {
+    window._glectron_lua_.mouseCapture(enabled);
+}
