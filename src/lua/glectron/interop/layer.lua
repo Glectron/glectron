@@ -1,4 +1,4 @@
-local __glectron_js_library__ = [==[%GLECTRON_JS_LIBRARY%]==]
+local __glectron_js_library__ = util.Base64Decode([===[%GLECTRON_JS_LIBRARY%]===])
 
 local InteropLayer = {}
 InteropLayer.__index = InteropLayer
