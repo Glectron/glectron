@@ -16,6 +16,15 @@ function Glectron:IsChromium()
     return string.find(BRANCH, "x86-64", 1, true) ~= nil or string.find(BRANCH, "chromium", 1, true) ~= nil
 end
 
+local glectronOK = false
+local ipeOK = false
+hook.Add("InitPostEntity", "Glectron", function()
+    ipeOK = true
+    if glectronOK then
+        hook.Run("GlectronReady")
+    end
+end)
+
 local function initialize()
     Glectron.Applications = {}
 
@@ -24,7 +33,11 @@ local function initialize()
     include(GLECTRON_PATH .. "/application.lua")
     
     print("Glectron is loaded.")
+    glectronOK = true
     hook.Run("GlectronLoaded")
+    if ipeOK then
+        hook.Run("GlectronReady")
+    end
 end
 
 if Glectron:IsChromium() then
