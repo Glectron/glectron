@@ -140,7 +140,15 @@ function Application:_Shutdown()
     self.m_DummyVGUIPanel:Remove()
     self.m_DHTML:Remove()
     self.m_InteropLayer:Reset() -- force gc
-    table.RemoveByValue(Glectron.Applications, self)
+    local toRemove = {}
+    for k,v in pairs(Glectron.Applications) do
+        if v == self then
+            table.insert(toRemove, k)
+        end
+    end
+    for _,v in pairs(toRemove) do
+        table.remove(Glectron.Applications, v)
+    end
 end
 Application.ForceShutdown = Application._Shutdown
 

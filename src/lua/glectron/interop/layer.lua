@@ -56,6 +56,7 @@ function InteropLayer:Reset()
 end
 
 function InteropLayer:RunJavascriptFunction(func, ...)
+    if not self.m_App.m_DHTML then return end
     self.m_App.m_DHTML:RunJavascript(Glectron.Interop:BuildJavascriptCallSignature(self, func, ...))
 end
 
