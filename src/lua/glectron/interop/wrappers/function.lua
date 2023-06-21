@@ -24,13 +24,13 @@ function WRAPPER:To(layer, obj)
             -- This is a wrapper to JavaScript function
             local io = Glectron.Interop:CreateInteropObject("jsfunction")
             io.ID = layer.m_Wrappers[obj]
-            return util.TableToJSON(io)
+            return io
         else
             local strid = util.Base64Encode(tostring(obj), true)
             layer.m_Objects[strid] = obj
             local io = Glectron.Interop:CreateInteropObject("luafunction")
             io.ID = strid
-            return util.TableToJSON(io)
+            return io
         end
     end
 end

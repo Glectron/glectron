@@ -7,7 +7,7 @@ function WRAPPER:From(_, obj)
 end
 
 function WRAPPER:To(layer, obj)
-    return type(obj) == "table" and util.TableToJSON(obj) or tostring(obj)
+    return obj
 end
 
 return WRAPPER
