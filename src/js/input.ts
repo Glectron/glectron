@@ -1,4 +1,4 @@
-type HitTestCallback = (w: number, h: number, x: number, y: number) => boolean;
+type HitTestCallback = (w: number, h: number, x: number, y: number) => boolean | undefined;
 
 const hitTesters: HitTestCallback[] = [];
 
