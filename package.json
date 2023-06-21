@@ -1,6 +1,6 @@
 {
   "name": "@glectron/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Innovation Garry's Mod addon framework",
   "main": "build/js/library.js",
   "types": "build/js/types/types.d.ts",
