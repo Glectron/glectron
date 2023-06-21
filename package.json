@@ -1,12 +1,16 @@
 {
-  "name": "glectron",
+  "name": "@glectron/core",
   "version": "0.0.1",
   "description": "Innovation Garry's Mod addon framework",
-  "main": "index.js",
+  "main": "build/js/library.js",
+  "types": "build/js/types/types.d.ts",
   "repository": "https://github.com/Glectron/glectron.git",
   "author": "YUCLing <luotianyi@luotianyi.me>",
   "license": "MIT",
   "private": false,
+  "files": [
+    "build/js"
+  ],
   "scripts": {
     "build": "cross-env NODE_ENV=production gulp",
     "watch": "cross-env NODE_ENV=production gulp watch",
