@@ -8,7 +8,7 @@ function Glectron.Interop:BuildJavascriptCallSignature(layer, func, ...)
     local parameters = {...}
     local p = ""
     for _,v in ipairs(parameters) do
-        p = p .. tostring(self:ToInteropObject(layer, v)) .. ","
+        p = p .. tostring(self:ToInteropObject(layer, v) or "null") .. ","
     end
     p = string.sub(p, 1, #p - 1)
     return func .. "(" .. p .. ")"

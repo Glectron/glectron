@@ -4,6 +4,11 @@ function meta:__tostring()
     return util.TableToJSON(self)
 end
 
+function Glectron.Interop:IntoJSONObject(obj)
+    setmetatable(obj, meta)
+    return obj
+end
+
 function Glectron.Interop:CreateInteropObject(type)
     local obj = {
         _G_InteropObj = true,
@@ -38,5 +43,5 @@ function Glectron.Interop:ToInteropObject(layer, obj)
             return ret
         end
     end
-    return "null"
+    return nil
 end

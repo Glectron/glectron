@@ -19,7 +19,7 @@ function WRAPPER:To(layer, obj)
             for k, v in pairs(obj) do
                 newTbl[k] = Glectron.Interop:InteropObjectType(v) and v or Glectron.Interop:ToInteropObject(layer, v)
             end
-            return util.TableToJSON(newTbl)
+            return Glectron.Interop:IntoJSONObject(newTbl)
         end
     end
 end
