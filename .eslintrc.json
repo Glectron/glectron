@@ -30,7 +30,7 @@
             "error",
             "double"
         ],
-        "semi": [
+        "@typescript-eslint/semi": [
             "error",
             "always"
         ]
