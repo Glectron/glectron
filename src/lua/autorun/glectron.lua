@@ -59,6 +59,7 @@ if SERVER then
         
         addDirectory(bestVersion.PATH)
         print(string.format("Using Glectron v%d.%d.%d (%s Version) in clients", ver.MAJOR, ver.MINOR, ver.PATCH, bestVersion.EMBED and "Embeded" or "Standalone"))
+        include(GTRON_PATH .. "/sv_init.lua")
     end
 
     local function registerGlectronVersion(attribute)
