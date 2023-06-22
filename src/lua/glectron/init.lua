@@ -1,4 +1,5 @@
 Glectron = {}
+Glectron.Ready = false
 
 local p = newproxy(true)
 local pmeta = getmetatable(p)
@@ -39,6 +40,10 @@ local function initialize()
         hook.Run("GlectronReady")
     end
 end
+
+hook.Add("GlectronReady", "GlectronReadyFlag", function()
+    Glectron.Ready = true
+end)
 
 if Glectron:IsChromium() then
     initialize()
