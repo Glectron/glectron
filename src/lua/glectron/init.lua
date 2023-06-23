@@ -85,10 +85,13 @@ hook.Add("ExpressLoaded", "Glectron", function()
 end)
 
 hook.Add("InitPostEntity", "Glectron", function()
-    postEntityOK = true
     if Glectron:IsChromium() or GLECTRON_BYPASS_AWESOMIUM_CHECK then
+        postEntityOK = true
         initialize()
     else
-        Derma_Query("You are not using x86-64 or chromium branch, Glectron's garbage collecting won't be fully functional, this can lead to a memory leak.\nWould you like to continue using Glectron (and its apps)?", "Glectron", "Yes", initialize, "No")
+        Derma_Query("You are not using x86-64 or chromium branch, Glectron's garbage collecting won't be fully functional, this can lead to a memory leak.\nWould you like to continue using Glectron (and its apps)?", "Glectron", "Yes", function()
+            postEntityOK = true
+            initialize()
+        end, "No")
     end
 end)
