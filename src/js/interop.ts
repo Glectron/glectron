@@ -31,12 +31,12 @@ export function toInteropObject(obj: unknown): unknown {
 }
 
 export function isInteropObject(obj: unknown): boolean {
-    if (typeof obj !== "object") return false;
+    if (typeof obj !== "object" || obj == undefined) return false;
     return (obj as { _G_InteropObj?: boolean })._G_InteropObj === true;
 }
 
 export function interopObjectType(obj: unknown): string | null {
-    if (typeof obj == "object") {
+    if (typeof obj == "object" && obj != undefined) {
         const o = obj as { _G_InteropObj?: boolean, _G_InteropType?: string };
         if (o && o._G_InteropObj) {
             return o._G_InteropType as string;
