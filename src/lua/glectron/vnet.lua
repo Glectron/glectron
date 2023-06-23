@@ -44,10 +44,6 @@
 
 
 
-if SERVER then
-    AddCSLuaFile()
-end
-
 if not hook or not hook.Add then require "hook" end
 if not net or not net.Receivers then require "net" end
 
@@ -74,20 +70,20 @@ file.Append("vnetlog.txt", "\n\n------------------------------------------------
 
 
 
-if file.IsDir("vnet", "DATA") then
-    local files, dirs = file.Find("vnet/*", "DATA")
+if file.IsDir("gvnet", "DATA") then
+    local files, dirs = file.Find("gvnet/*", "DATA")
 
     for i = 1, #files do
-        file.Delete("vnet/" .. files[i])
+        file.Delete("gvnet/" .. files[i])
     end
 else
-    file.CreateDir("vnet")
+    file.CreateDir("gvnet")
 end
 
 local function getFile()
     while true do
         local id = math_random(-2147483648, 2147483647)
-        local path = "vnet/queue_" .. id .. ".txt"
+        local path = "gvnet/queue_" .. id .. ".txt"
 
         if not file.Exists(path, "DATA") then
             return path
@@ -148,7 +144,7 @@ local vnet = {}
 
 
 
-local msg_name = "vNet"
+local msg_name = "GvNet"
 
 if SERVER then
     util.AddNetworkString(msg_name)
@@ -507,7 +503,7 @@ do
 
         local expiry_incoming, lastFlushes = {}, {}
 
-        hook.Add("Think", "vNet", function()
+        hook.Add("Think", "GlectronvNet", function()
             local nao, toRemove = now(), {}
 
             for pck, data in pairs(expiry_incoming) do
@@ -847,7 +843,7 @@ do
 
 
 
-        hook.Add("PlayerDisconnect", "vNet Cleanup", function(ply)
+        hook.Add("PlayerDisconnect", "GlectronvNet Cleanup", function(ply)
             local ind = ply:EntIndex()
 
             queue_outgoing[ind] = {}
@@ -944,7 +940,7 @@ do
 
         local expiry_incoming, lastFlush = {}
 
-        hook.Add("Think", "vNet", function()
+        hook.Add("Think", "GlectronvNet", function()
             local nao = now()
 
             if (#queue_outgoing == 0 and #misc_outgoing == 0) or (lastFlush and (nao - lastFlush) < stepsize) then return end
@@ -1589,7 +1585,7 @@ end
 
 local callbacks, toDiscard = {}, {}
 
-hook.Add("Think", "vNet Postage", function()
+hook.Add("Think", "GlectronvNet Postage", function()
     if #toDiscard > 0 then
         for i = #toDiscard, 1, -1 do
             if not toDiscard[i].Conserved and not toDiscard[i].Discarded then
@@ -2267,7 +2263,7 @@ if CLIENT then
 
 
 
-    hook.Add("Initialize", "vNet Initial Throttle", function()
+    hook.Add("Initialize", "GlectronvNet Initial Throttle", function()
         throttler("cl_cmdrate", nil, cvars.Number("cl_cmdrate"))
         throttler("cl_updaterate", nil, cvars.Number("cl_updaterate"))
     end)
