@@ -36,11 +36,12 @@ local function receivePayload(key, content)
         RunString(content)
         return
     end
+    local time = loadingQueue[key] and tostring(os.time() - loadingQueue[key]) or "(unknown)"
     if Glectron.Ready then
-        chat.AddText(Color(102, 204, 255), "[Glectron] ", Color(27, 63, 155), key, Color(255, 255, 255), " retreived in ", Color(5, 181, 90), tostring(os.time() - loadingQueue[key]), Color(255, 255, 255), " second(s), executing")
+        chat.AddText(Color(102, 204, 255), "[Glectron] ", Color(27, 63, 155), key, Color(255, 255, 255), " retreived in ", Color(5, 181, 90), time, Color(255, 255, 255), " second(s), executing")
         RunString(content)
     else
-        chat.AddText(Color(102, 204, 255), "[Glectron] ", Color(27, 63, 155), key, Color(255, 255, 255), " retreived in ", Color(5, 181, 90), tostring(os.time() - loadingQueue[key]), Color(255, 255, 255), " second(s), queueing")
+        chat.AddText(Color(102, 204, 255), "[Glectron] ", Color(27, 63, 155), key, Color(255, 255, 255), " retreived in ", Color(5, 181, 90), time, Color(255, 255, 255), " second(s), queueing")
         table.insert(payloadQueue, content)
     end
     loadingQueue[key] = nil
