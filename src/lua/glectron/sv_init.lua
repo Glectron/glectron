@@ -1,9 +1,12 @@
 Glectron = {}
+Glectron.Ready = false
 
 Glectron.VNet = include("vnet.lua")
 
 util.AddNetworkString("GlectronApp")
 util.AddNetworkString("GlectronAppPayload")
+
+include("interop/js.lua")
 
 local fatLuas = {}
 
@@ -47,4 +50,6 @@ function Glectron:AddCSFatLuaFile()
     end
 end
 
+hook.Run("GlectronLoaded")
+Glectron.Ready = true
 hook.Run("GlectronLoaded")

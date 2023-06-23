@@ -1,7 +1,7 @@
 Glectron.Interop = {}
 
 include("wrappers.lua")
-include("layer.lua")
+local jsLibCallback = include("layer.lua")
 include("object.lua")
 
 function Glectron.Interop:BuildJavascriptCallSignature(layer, func, ...)
@@ -30,3 +30,5 @@ function Glectron.Interop:BindGCForWrapper(layer, obj, id)
         layer:Collect(id)
     end)
 end
+
+return jsLibCallback

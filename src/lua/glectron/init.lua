@@ -21,19 +21,41 @@ function Glectron:IsChromium()
     return string.find(BRANCH, "x86-64", 1, true) ~= nil or string.find(BRANCH, "chromium", 1, true) ~= nil
 end
 
-include(GLECTRON_PATH .. "/interop/init.lua")
+local postEntityOK = false
+local jsLibOK = false
+
+local loadingQueue = {}
+local payloadQueue = {}
+
+local function initialize()
+    if Glectron.Ready or not postEntityOK or not jsLibOK then return end
+    Glectron.Ready = true
+
+    for _,v in ipairs(payloadQueue) do
+        RunString(v)
+    end
+
+    hook.Run("GlectronReady")
+end
+
+local jsLibCallback = include(GLECTRON_PATH .. "/interop/init.lua")
 include(GLECTRON_PATH .. "/input.lua")
 include(GLECTRON_PATH .. "/application.lua")
 
 print("Glectron is loaded.")
 hook.Run("GlectronLoaded")
 
-local loadingQueue = {}
-local payloadQueue = {}
 local function receivePayload(key, content)
-    if string.find(key, GLECTRON_PATH .. "/hud.lua", 1, true) ~= nil then
-        -- Glectron HUD, load immediately
-        RunString(content)
+    if string.find(key, GLECTRON_PATH, 1, true) == 1 then
+        -- Glectron internal resource
+        if key == GLECTRON_PATH .. "/interop/js.lua" then
+            local func = CompileString(content, "GlectronJavaScriptLibrary")
+            jsLibCallback(func())
+            jsLibOK = true
+            initialize()
+        else
+            RunString(content)
+        end
         return
     end
     local time = loadingQueue[key] and tostring(os.time() - loadingQueue[key]) or "(unknown)"
@@ -47,7 +69,7 @@ local function receivePayload(key, content)
     loadingQueue[key] = nil
 end
 Glectron.VNet.Watch("GlectronApp", function(pak)
-    if string.find(pak.Data, GLECTRON_PATH .. "/hud.lua", 1, true) ~= nil then return end
+    if string.find(pak.Data, GLECTRON_PATH, 1, true) == 1 then return end
     loadingQueue[pak.Data] = os.time()
     chat.AddText(Color(102, 204, 255), "[Glectron]", Color(255, 255, 255), " Retreving ", Color(27, 63, 155), pak.Data, Color(255, 255, 255), " from server...")
 end)
@@ -62,17 +84,8 @@ hook.Add("ExpressLoaded", "Glectron", function()
     end)
 end)
 
-local function initialize()
-    Glectron.Ready = true
-
-    for _,v in ipairs(payloadQueue) do
-        RunString(v)
-    end
-
-    hook.Run("GlectronReady")
-end
-
 hook.Add("InitPostEntity", "Glectron", function()
+    postEntityOK = true
     if Glectron:IsChromium() or GLECTRON_BYPASS_AWESOMIUM_CHECK then
         initialize()
     else

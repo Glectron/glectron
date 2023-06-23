@@ -14,7 +14,7 @@ if SERVER then
     local function addDirectory(dir)
         local files, dirs = file.Find(dir .. "/*", "LUA")
         for _,v in pairs(files) do
-            if string.EndsWith(v, ".lua") then
+            if string.EndsWith(v, ".lua") and dir .. "/" .. v ~= GTRON_PATH .. "/interop/js.lua" then
                 AddCSLuaFile(dir .. "/" .. v)
             end
         end

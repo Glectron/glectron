@@ -1,4 +1,4 @@
-local __glectron_js_library__ = util.Base64Decode([===[%GLECTRON_JS_LIBRARY%]===])
+local __glectron_js_library__
 
 local InteropLayer = {}
 InteropLayer.__index = InteropLayer
@@ -77,3 +77,7 @@ function InteropLayer:FireEvent(event, data)
 end
 
 Glectron.InteropLayer = InteropLayer
+
+return function(lib)
+    __glectron_js_library__ = lib
+end
