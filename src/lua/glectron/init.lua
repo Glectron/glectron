@@ -17,6 +17,10 @@ local meta = {
 }
 setmetatable(Glectron, meta)
 
+function Glectron:ChatMsg(...)
+    chat.AddText(Color(102, 204, 255), "[Glectron]", Color(255, 255, 255), ...)
+end
+
 function Glectron:IsChromium()
     return string.find(BRANCH, "x86-64", 1, true) ~= nil or string.find(BRANCH, "chromium", 1, true) ~= nil
 end
@@ -25,62 +29,112 @@ local postEntityOK = false
 local jsLibOK = false
 
 local loadingQueue = {}
-local payloadQueue = {}
+local applicationQueue = {}
+local runApplication -- Forward declare
 
 local function initialize()
     if Glectron.Ready or not postEntityOK or not jsLibOK then return end
     Glectron.Ready = true
 
-    for _,v in ipairs(payloadQueue) do
-        RunString(v)
+    for _,v in ipairs(applicationQueue) do
+        runApplication(unpack(v))
     end
 
     hook.Run("GlectronReady")
 end
 
 local jsLibCallback = include(GLECTRON_PATH .. "/interop/init.lua")
+include(GLECTRON_PATH .. "/cache.lua")
 include(GLECTRON_PATH .. "/input.lua")
 include(GLECTRON_PATH .. "/application.lua")
+
+file.CreateDir("glectron/cache")
 
 print("Glectron is loaded.")
 hook.Run("GlectronLoaded")
 
-local function receivePayload(key, content)
-    if string.find(key, GLECTRON_PATH, 1, true) == 1 then
+local applications = {}
+
+function Glectron:GetApplicationByID(id)
+    for _,v in pairs(applications) do
+        if v.ID == id then return v end
+    end
+end
+
+runApplication = function(id, name, content)
+    local isGlectronInternal = string.StartsWith(id, "glectron.")
+    if isGlectronInternal then
         -- Glectron internal resource
-        if key == GLECTRON_PATH .. "/interop/js.lua" then
+        if id == "glectron.javascript" then
             local func = CompileString(content, "GlectronJavaScriptLibrary")
             jsLibCallback(func())
             jsLibOK = true
             initialize()
-        else
-            RunString(content)
+            return
         end
-        return
-    end
-    local time = loadingQueue[key] and tostring(os.time() - loadingQueue[key]) or "(unknown)"
-    if Glectron.Ready then
-        chat.AddText(Color(102, 204, 255), "[Glectron] ", Color(27, 63, 155), key, Color(255, 255, 255), " retreived in ", Color(5, 181, 90), time, Color(255, 255, 255), " second(s), executing")
-        RunString(content)
+    elseif not Glectron.Ready then
+        table.insert(applicationQueue, {id, name, content})
     else
-        chat.AddText(Color(102, 204, 255), "[Glectron] ", Color(27, 63, 155), key, Color(255, 255, 255), " retreived in ", Color(5, 181, 90), time, Color(255, 255, 255), " second(s), queueing")
-        table.insert(payloadQueue, content)
+        Glectron:ChatMsg("Running application ", name)
     end
-    loadingQueue[key] = nil
+    local err = RunString(content, id, false)
+    if err then
+        Glectron:ChatMsg("Unable to run application ", name, "(", id, ").")
+        error("Unable to run application " .. name .. "(" .. id .. "): " .. err)
+    end
 end
+
+local function handlePayload(id, payload, checksum)
+    local app = Glectron:GetApplicationByID(id)
+    if not app then error("Unknown application.") end
+    Glectron.Cache:WriteCache(payload, checksum)
+    runApplication(id, app.Name, payload)
+end
+
+local function requestPayload(id, name, checksum)
+    for k,v in pairs(applications) do
+        if v.ID == id then
+            table.remove(applications, k)
+        end
+    end
+    table.insert(applications, {
+        ID = id,
+        Name = name
+    })
+    Glectron.VNet.CreatePacket("GlectronAppPayload")
+        :AddServer()
+        :String(id)
+        :String(checksum)
+        :Send()
+end
+
 Glectron.VNet.Watch("GlectronApp", function(pak)
-    if string.find(pak.Data, GLECTRON_PATH, 1, true) == 1 then return end
-    loadingQueue[pak.Data] = os.time()
-    chat.AddText(Color(102, 204, 255), "[Glectron]", Color(255, 255, 255), " Retreving ", Color(27, 63, 155), pak.Data, Color(255, 255, 255), " from server...")
+    local id = pak:String()
+    local name = pak:String()
+    local checksum = pak:String()
+
+    Glectron.Cache:IsCached(checksum, function(result, data)
+        if result then
+            Glectron.Cache:TouchCache(checksum)
+            runApplication(id, name, data)
+        else
+            if not string.StartsWith(id, "glectron.") then
+                Glectron:ChatMsg("Retreving application ", name, " from server...")
+            end
+            requestPayload(id, name, checksum)
+        end
+    end)
 end)
 Glectron.VNet.Watch("GlectronAppPayload", function(pak)
-    local key = pak:String()
-    local content = pak:String()
-    receivePayload(key, content)
+    handlePayload(
+        pak:String(), -- ID
+        pak:String(), -- Name
+        pak:String() -- Checksum
+    )
 end)
 hook.Add("ExpressLoaded", "Glectron", function()
     express.Receive("GlectronAppPayload", function(data)
-        receivePayload(unpack(data))
+        handlePayload(unpack(data))
     end)
 end)
 

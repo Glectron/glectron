@@ -1,9 +1,15 @@
 if SERVER then
+    local function register()
+        Glectron:RegisterApplication({
+            ID = "glectron.javascript",
+            Name = "Glectron JavaScript Library"
+        })
+    end
     if Glectron and Glectron.Ready then
-        Glectron:AddCSFatLuaFile()
+        register()
     end
     hook.Add("GlectronLoaded", "GlectronJavaScriptLibrary", function()
-        Glectron:AddCSFatLuaFile()
+        register()
     end)
     return
 end
