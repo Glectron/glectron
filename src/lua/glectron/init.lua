@@ -74,6 +74,7 @@ runApplication = function(id, name, content)
         end
     elseif not Glectron.Ready then
         table.insert(applicationQueue, {id, name, content})
+        return
     else
         Glectron:ChatMsg("Running application ", name)
     end

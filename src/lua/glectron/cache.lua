@@ -18,10 +18,12 @@ function CACHE:IsCached(checksum, callback)
                     callback(false)
                     return
                 end
+                data = util.Decompress(data)
                 local res = verifyChecksum(data, checksum)
                 callback(res, res and data)
             end)
         else
+            local data = util.Decompress(file.Read(path, "DATA"))
             local res = verifyChecksum(data, checksum)
             return res, res and data
         end
