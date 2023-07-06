@@ -17,7 +17,7 @@ function WRAPPER:To(layer, obj)
         if not Glectron.Interop:InteropObjectType(obj) then
             local newTbl = {}
             for k, v in pairs(obj) do
-                newTbl[k] = Glectron.Interop:InteropObjectType(v) and v or Glectron.Interop:ToInteropObject(layer, v)
+                newTbl[k] = (type(v) == "string" or Glectron.Interop:InteropObjectType(v)) and v or Glectron.Interop:ToInteropObject(layer, v)
             end
             return Glectron.Interop:IntoJSONObject(newTbl)
         end
