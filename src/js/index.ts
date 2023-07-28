@@ -4,11 +4,18 @@ import { luaBridge, lib } from "./library";
 
 import "./wrappers";
 import { objectObjs, wrapperObjs } from "./interop";
+import { storagePromise } from "./storage";
 
 window._glectron_js_ = luaBridge;
 window.glectron = lib;
 
-fireEvent("glectronlibloaded");
+const loadPromises = [
+    storagePromise
+];
+
+Promise.allSettled(loadPromises).then(() => {
+    fireEvent("glectronlibloaded");
+});
 
 declare const glectron: {debug?: {__initialize: (...debugArgs: unknown[]) => void}};
 

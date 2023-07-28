@@ -6,10 +6,22 @@ type ShutdownCallback = () => Promise<void>;
 const beforeShutdownCallbacks: BeforeShutdownCallback[] = [];
 const shutdownCallbacks: ShutdownCallback[] = [];
 
+/**
+ * Registers a before shutdown callback.
+ * 
+ * Return `true` in callback to cancel the shutdown.
+ * @param callback Callback function.
+ */
 export function beforeShutdown(callback: BeforeShutdownCallback) {
     beforeShutdownCallbacks.push(callback);
 }
 
+/** 
+ * Registers a shutdown callback.
+ * 
+ * Shutdown in this callback can't be cancelled.
+ * @param callback Callback function.
+ */
 export function onShutdown(callback: ShutdownCallback) {
     shutdownCallbacks.push(callback);
 }

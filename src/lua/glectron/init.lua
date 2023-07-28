@@ -44,6 +44,7 @@ local function initialize()
 end
 
 local jsLibCallback = include(GLECTRON_PATH .. "/interop/init.lua")
+include(GLECTRON_PATH .. "/storage.lua")
 include(GLECTRON_PATH .. "/cache.lua")
 include(GLECTRON_PATH .. "/input.lua")
 include(GLECTRON_PATH .. "/application.lua")

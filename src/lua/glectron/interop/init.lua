@@ -1,10 +1,11 @@
-Glectron.Interop = {}
+local INTEROP = {}
+Glectron.Interop = INTEROP
 
 include("wrappers.lua")
 local jsLibCallback = include("layer.lua")
 include("object.lua")
 
-function Glectron.Interop:BuildJavascriptCallSignature(layer, func, ...)
+function INTEROP:BuildJavascriptCallSignature(layer, func, ...)
     local parameters = {...}
     local p = ""
     for _,v in ipairs(parameters) do
@@ -14,7 +15,7 @@ function Glectron.Interop:BuildJavascriptCallSignature(layer, func, ...)
     return func .. "(" .. p .. ")"
 end
 
-function Glectron.Interop:ListenForGC(obj, callback)
+function INTEROP:ListenForGC(obj, callback)
     local p = newproxy(true)
     local pmeta = getmetatable(p)
     function pmeta:__gc()
@@ -25,7 +26,7 @@ function Glectron.Interop:ListenForGC(obj, callback)
     setmetatable(obj, meta)
 end
 
-function Glectron.Interop:BindGCForWrapper(layer, obj, id)
+function INTEROP:BindGCForWrapper(layer, obj, id)
     self:ListenForGC(obj, function()
         layer:Collect(id)
     end)

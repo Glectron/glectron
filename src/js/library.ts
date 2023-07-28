@@ -1,3 +1,4 @@
+import "./storage";
 import * as events from "./events";
 import { registerLuaFunction, call, collect } from "./interop";
 import { beforeShutdown, onShutdown, setup, shutdown } from "./lifecycle";
@@ -16,9 +17,11 @@ declare global {
             makePopup: () => void,
             unPopup: () => void,
             globalMouseMove: (enabled: boolean) => void,
-            mouseCapture: (enabled: boolean) => void
+            mouseCapture: (enabled: boolean) => void,
+            setStorage: (key: string, value?: string) => void,
+            getStorage: (callback: (storage: Array<{key: string, value: string}>) => void) => void,
+            clearStorage: () => void
         }
-        glectron: typeof lib;
     }
 }
 
@@ -33,6 +36,9 @@ export const luaBridge = {
     fireEvent: events.fireEvent
 };
 export const lib = {
+    /**
+     * Indicates is Glectron running in Chromium.
+     */
     get isChromium() {
         return (window as {_GLECTRON_CHROMIUM_?: boolean})._GLECTRON_CHROMIUM_ === true;
     },

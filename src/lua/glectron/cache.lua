@@ -48,6 +48,7 @@ function CACHE:TouchCache(checksum)
 end
 
 function CACHE:CleanupCache()
+    -- Should also get a list of invalid to check them up?
     local result = sql.Query("SELECT id FROM glectron_cache WHERE last_used >= strftime('%s') - 7 * 24 * 60 * 60")
     if not result then return end
     local validCaches = {}
@@ -56,8 +57,10 @@ function CACHE:CleanupCache()
     end
     local cacheFiles = file.Find("glectron/cache/*", "DATA")
     for _,v in pairs(cacheFiles) do
-        if not table.HasValue(validCaches, string.sub(v, 1, #v - 4)) then
+        local id = string.sub(v, 1, #v - 4)
+        if not table.HasValue(validCaches, id) then
             file.Delete("glectron/cache/" .. v)
+            sql.Query("DELETE FROM glectron_cache WHERE id = '" .. id .. "'")
         end
     end
 end

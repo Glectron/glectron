@@ -1,9 +1,11 @@
 local Application = {}
 Application.__index = Application
 
-function Application:Create()
+function Application:Create(id)
     local app = {}
     setmetatable(app, Application)
+
+    app.m_ID = id
     
     app.m_InteropLayer = Glectron.InteropLayer:Create(app)
 
@@ -47,6 +49,27 @@ function Application:Create()
         end)
         self:AddFunction("_glectron_lua_", "mouseCapture", function(enabled)
             app:MouseCapture(enabled)
+        end)
+        app:AddFunction("_glectron_lua_.getStorage", function(callback)
+            if not app.m_ID then
+                return
+            end
+            callback(Glectron.Storage:GetStorage(app.m_ID))
+        end)
+        self:AddFunction("_glectron_lua_", "setStorage", function(key, value)
+            if not app.m_ID then
+                --TODO: Better way to handle apps without app id
+                --error("Application ID must be provided in order to use storage")
+                return
+            end
+            Glectron.Storage:SetStorage(app.m_ID, key, value)
+        end)
+        self:AddFunction("_glectron_lua_", "clearStorage", function()
+            if not app.m_ID then
+                --error("Application ID must be provided in order to use storage")
+                return
+            end
+            Glectron.Storage:ClearStorage(app.m_ID)
         end)
         
         if type(app.Setup) == "function" then
