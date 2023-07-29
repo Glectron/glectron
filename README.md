@@ -2,7 +2,7 @@
 <p align="center">Electron in Garry's Mod.</p>
 
 # Work In Progress
-The project is still in Early State of development. You can check out all technical concepts in [Discussions](https://github.com/Glectron/glectron/discussions).
+The project is still in Early State of development. ~~You can check out all technical concepts in [Discussions](https://github.com/Glectron/glectron/discussions).~~ Technical concepts in Discussions might be outdated due to ongoing development. Please refer to the code for actual designs.
 
 It's _not recommended_ to use this framework now. All APIs are **not stable**, which means they are subject to be changed anytime.
 
